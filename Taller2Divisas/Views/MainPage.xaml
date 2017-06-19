@@ -4,7 +4,6 @@
     xmlns:control="clr-namespace:Taller2Divisas.Controls" 
     x:Class="Taller2Divisas.Views.MainPage"
     Title="Divisas"
-    BackgroundColor="Gray"
     BindingContext="{Binding Main, Source={StaticResource Locator}}">
 	<ContentPage.Content>
         <StackLayout 
@@ -21,24 +20,47 @@
                 </Label>
                 <control:BindablePicker 
                     Title="Seleccione moneda origen..." 
-                    DisplayMemberPath="Code" SelectedValuePath="TaxRate" 
+                    DisplayMemberPath="Name" 
+                    SelectedValuePath="TaxRate" 
                     ItemsSource="{Binding Rates}" 
                     SelectedValue="{Binding Path=SourceRate, Mode=TwoWay}" 
                     HorizontalOptions="FillAndExpand" 
                     VerticalOptions="Center">
                 </control:BindablePicker>
-                <Label 
-                    Text="Modena destino:">
-                </Label>
+                    <Label 
+                       Text="Modena destino:">
+                    </Label>
+                <StackLayout
+                    Orientation="Horizontal">
                 <control:BindablePicker 
+                    WidthRequest="200"
                     Title="Seleccione moneda destino..." 
-                    DisplayMemberPath="Code" 
+                    DisplayMemberPath="Name" 
                     SelectedValuePath="TaxRate" 
                     ItemsSource="{Binding Rates}" 
                     SelectedValue="{Binding Path=TargetRate, Mode=TwoWay}" 
                     HorizontalOptions="FillAndExpand" 
                     VerticalOptions="Center">
                 </control:BindablePicker>
+                <Image
+                    HorizontalOptions="End"
+                    Source="revert.png">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangeCommand}"/>
+                    </Image.GestureRecognizers>
+                </Image>
+                <!--
+                   <Button
+                        WidthRequest="100"
+                        Command="{Binding ChangeCommand}"
+                        HorizontalOptions="End"
+                        Text="Invertir"
+                        BackgroundColor="Lime"
+                        TextColor="White"
+                        HeightRequest="40"
+                        BorderRadius="20">
+                    </Button>-->
+                </StackLayout>
                 <Button 
                     Command="{Binding ConvertMoneyCommand}" 
                     IsEnabled="{Binding IsEnabled}" 
