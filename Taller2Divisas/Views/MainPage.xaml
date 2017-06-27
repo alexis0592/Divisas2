@@ -76,6 +76,7 @@
             <Label
                 Text="{Binding OnlineStatus}"
                 TextColor="White"
+                HorizontalTextAlignment="Center"
                 BackgroundColor="Black"
                 HorizontalOptions="FillAndExpand"
                 VerticalOptions="End">

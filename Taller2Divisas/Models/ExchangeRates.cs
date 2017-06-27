@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using SQLite.Net.Attributes;
 
 namespace Taller2Divisas.Models
 {
@@ -366,8 +367,10 @@ namespace Taller2Divisas.Models
 		public string ZWL { get; set; }
     }
 
+
 	public class Rate
 	{
+        public int RateId { get; set; }
         public double TaxRate { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }

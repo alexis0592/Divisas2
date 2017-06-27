@@ -288,38 +288,39 @@ namespace Taller2Divisas.ViewModels
         }
 
 	    private async void ConvertMoney()
+		{
+			if (Amount <= 0)
 			{
-				if (Amount <= 0)
-				{
-					await App.Current.MainPage.DisplayAlert(
-						"Error",
-						"Debes ingresar un valor a convertir",
-						"Aceptar");
-					return;
-				}
-
-				if (SourceRate == 0)
-				{
-					await App.Current.MainPage.DisplayAlert(
-						"Error",
-						"Debes seleccionar la moneda origen",
-						"Aceptar");
-					return;
-				}
-
-				if (TargetRate == 0)
-				{
-					await App.Current.MainPage.DisplayAlert(
-						"Error",
-						"Debes seleccionar la moneda destino",
-						"Aceptar");
-					return;
-				}
-
-				decimal amountConverted = Amount / (decimal)SourceRate * (decimal)TargetRate;
-
-				Message = string.Format("{0:N2} = {1:N2}", Amount, amountConverted);
+				await App.Current.MainPage.DisplayAlert(
+					"Error",
+					"Debes ingresar un valor a convertir",
+					"Aceptar");
+				return;
 			}
+
+			if (SourceRate == 0)
+			{
+				await App.Current.MainPage.DisplayAlert(
+					"Error",
+					"Debes seleccionar la moneda origen",
+					"Aceptar");
+				return;
+			}
+
+			if (TargetRate == 0)
+			{
+				await App.Current.MainPage.DisplayAlert(
+					"Error",
+					"Debes seleccionar la moneda destino",
+					"Aceptar");
+				return;
+			}
+
+			decimal amountConverted = Amount / (decimal)SourceRate * (decimal)TargetRate;
+
+            Message = string.Format("{0:N2} = {1:N2}", Amount, amountConverted);
+
+		}
 
         public ICommand ChangeCommand
         {

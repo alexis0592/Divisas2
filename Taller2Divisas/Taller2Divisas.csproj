@@ -50,6 +50,7 @@
     <Compile Include="Services\DataService.cs" />
     <Compile Include="Services\UtilServices.cs" />
     <Compile Include="Models\Response.cs" />
+    <Compile Include="Models\LastSearch.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

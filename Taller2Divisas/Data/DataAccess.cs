@@ -23,6 +23,7 @@ namespace Taller2Divisas.Data
                                               System.IO.Path.Combine(config.DirectoryDB,
                                                                      "Divisas2.db3"));
             connection.CreateTable<Rate>();
+            connection.CreateTable<LastSearch>();
         }
 		#endregion
 
