@@ -7,30 +7,30 @@
     BindingContext="{Binding Main, Source={StaticResource Locator}}">
 	<ContentPage.Content>
         <StackLayout 
-                Padding="8">
+            Padding="8">
+            <Label 
+                Text="Valor a convertir:">
+            </Label>
+            <Entry 
+                Keyboard="Numeric" 
+                Text="{Binding Amount}">
+            </Entry>
+            <Label 
+                Text="Moneda origen:">
+            </Label>
+            <control:BindablePicker 
+                Title="Seleccione moneda origen..." 
+                DisplayMemberPath="Name" 
+                SelectedValuePath="TaxRate" 
+                ItemsSource="{Binding Rates}" 
+                SelectedValue="{Binding Path=SourceRate, Mode=TwoWay}" 
+                HorizontalOptions="FillAndExpand" 
+                VerticalOptions="Center">
+            </control:BindablePicker>
                 <Label 
-                    Text="Valor a convertir:">
+                   Text="Modena destino:">
                 </Label>
-                <Entry 
-                    Keyboard="Numeric" 
-                    Text="{Binding Amount}">
-                </Entry>
-                <Label 
-                    Text="Moneda origen:">
-                </Label>
-                <control:BindablePicker 
-                    Title="Seleccione moneda origen..." 
-                    DisplayMemberPath="Name" 
-                    SelectedValuePath="TaxRate" 
-                    ItemsSource="{Binding Rates}" 
-                    SelectedValue="{Binding Path=SourceRate, Mode=TwoWay}" 
-                    HorizontalOptions="FillAndExpand" 
-                    VerticalOptions="Center">
-                </control:BindablePicker>
-                    <Label 
-                       Text="Modena destino:">
-                    </Label>
-                <StackLayout
+            <StackLayout
                     Orientation="Horizontal">
                 <control:BindablePicker 
                     WidthRequest="200"
@@ -44,46 +44,42 @@
                 </control:BindablePicker>
                 <Image
                     HorizontalOptions="End"
-                    Source="revert.png">
+                    Source="change.png">
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ChangeCommand}"/>
                     </Image.GestureRecognizers>
                 </Image>
-                <!--
-                   <Button
-                        WidthRequest="100"
-                        Command="{Binding ChangeCommand}"
-                        HorizontalOptions="End"
-                        Text="Invertir"
-                        BackgroundColor="Lime"
-                        TextColor="White"
-                        HeightRequest="40"
-                        BorderRadius="20">
-                    </Button>-->
-                </StackLayout>
-                <Button 
-                    Command="{Binding ConvertMoneyCommand}" 
-                    IsEnabled="{Binding IsEnabled}" 
-                    Text="Convertir" 
-                    BackgroundColor="Navy" 
-                    TextColor="White" 
-                    HeightRequest="40" 
-                    BorderRadius="20">
-                </Button>
-                <ActivityIndicator 
-                    IsRunning="{Binding IsRunning}">
-                </ActivityIndicator>
-                <Label 
-                    Text="{Binding Message}" 
-                    BackgroundColor="Silver" 
-                    TextColor="Purple" 
-                    FontAttributes="Bold" 
-                    FontSize="Medium"
-                    HorizontalTextAlignment="Center" 
-                    VerticalTextAlignment="Center" 
-                    HorizontalOptions="FillAndExpand" 
-                    VerticalOptions="FillAndExpand">
-                </Label>
+            </StackLayout>
+            <Button 
+                Command="{Binding ConvertMoneyCommand}" 
+                IsEnabled="{Binding IsEnabled}" 
+                Text="Convertir" 
+                BackgroundColor="Navy" 
+                TextColor="White" 
+                HeightRequest="40" 
+                BorderRadius="20">
+            </Button>
+            <ActivityIndicator 
+                IsRunning="{Binding IsRunning}">
+            </ActivityIndicator>
+            <Label 
+                Text="{Binding Message}" 
+                BackgroundColor="Silver" 
+                TextColor="Purple" 
+                FontAttributes="Bold" 
+                FontSize="Medium"
+                HorizontalTextAlignment="Center" 
+                VerticalTextAlignment="Center" 
+                HorizontalOptions="FillAndExpand" 
+                VerticalOptions="FillAndExpand">
+            </Label>
+            <Label
+                Text="{Binding OnlineStatus}"
+                TextColor="White"
+                BackgroundColor="Black"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="End">
+            </Label>
             </StackLayout>
 	</ContentPage.Content>
 </ContentPage>

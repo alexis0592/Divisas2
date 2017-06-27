@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Taller2Divisas.Models;
 using System.Linq;
 using Xamarin.Forms;
+using Taller2Divisas.Services;
 
 namespace Taller2Divisas.ViewModels
 {
@@ -20,9 +21,12 @@ namespace Taller2Divisas.ViewModels
         private bool isEnabled;
         private ExchangeRates exchangeRates;
         private RateNames rateNames;
+        private DataService dataService;
+        private UtilServices utilService; 
         private string message;
         private double sourceRate;
         private double targetRate;
+        private string onlineStatus;
         #endregion
 
 
@@ -114,16 +118,32 @@ namespace Taller2Divisas.ViewModels
             }
         }
 
+        public string OnlineStatus
+        {
+            get
+            {
+                return onlineStatus;
+            }
+            set{
+                if(onlineStatus != value){
+                    onlineStatus = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OnlineStatus"));
+                }
+            }
+        }
+
         #endregion
 
         #region Constructors
         public MainViewModel()
         {
             Rates = new ObservableCollection<Rate>();
+            dataService = new DataService();
+            utilService = new UtilServices();
 
             IsEnabled = false;
             GetRates();
-        }
+        } 
 
 
         #endregion
@@ -165,6 +185,12 @@ namespace Taller2Divisas.ViewModels
 
             List<Rate> rateList = joinList(rateValues, rateNamesList);
 
+            var auxListRate = dataService.Get<Rate>(false);
+
+            if(auxListRate.Count != 0){
+                dataService.DeleteAll<Rate>();
+            }
+
             foreach (Rate property in rateList)
             {
                 Rates.Add(new Rate
@@ -172,6 +198,12 @@ namespace Taller2Divisas.ViewModels
                     Code = property.Code,
                     TaxRate = (double)property.TaxRate,
                     Name = property.FullName
+                });
+
+                dataService.Insert(new Rate{
+                    Code = property.Code,
+                    TaxRate = (double)property.TaxRate,
+                    Name = property.Name
                 });
             }
         }
@@ -181,6 +213,17 @@ namespace Taller2Divisas.ViewModels
         {
             try
             {
+                var checkConnect = await utilService.CheckConnectivity();
+
+                if(!checkConnect.IsSuccess){
+                    OnlineStatus = "Divisas is currently Offline";
+                    GetDataFromBD();
+                    IsRunning = false;
+                    IsEnabled = true;
+                    return;
+                }
+
+                OnlineStatus = "Divisas is Online";
                 var client = new HttpClient();
                 var client2 = new HttpClient();
 
@@ -218,6 +261,21 @@ namespace Taller2Divisas.ViewModels
             IsRunning = false;
             IsEnabled = true;
 
+        }
+
+        private void GetDataFromBD(){
+
+            Rates.Clear();
+            List<Rate> rates =  dataService.Get<Rate>(false);
+
+            foreach(var rate in rates){
+                Rates.Add(new Rate
+                {
+                    Code = rate.Code,
+                    Name = rate.Name,
+                    TaxRate = (double)rate.TaxRate
+                });
+            }
         }
         #endregion
 
