@@ -8,8 +8,13 @@ namespace Taller2Divisas.Models
         [PrimaryKey]
         public int LastSearchId { get; set; }
 
-        public string CodeSourceRateSearch { get; set; }
+        public double CodeSourceRateSearch { get; set; }
 
-        public string TargetRateSearch { get; set; }
+        public double TargetRateSearch { get; set; }
+
+        public override int GetHashCode()
+        {
+            return LastSearchId;
+        }
     }
 }

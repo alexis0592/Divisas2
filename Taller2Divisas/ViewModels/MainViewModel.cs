@@ -218,36 +218,36 @@ namespace Taller2Divisas.ViewModels
                 if(!checkConnect.IsSuccess){
                     OnlineStatus = "Divisas is currently Offline";
                     GetDataFromBD();
-                    IsRunning = false;
-                    IsEnabled = true;
-                    return;
+                }else{
+					OnlineStatus = "Divisas is Online";
+					var client = new HttpClient();
+					var client2 = new HttpClient();
+
+					client.BaseAddress = new Uri("https://openexchangerates.org");
+					var url = "/api/latest.json?app_id=f28f03c9bd0f497e85b33e20330d2202";
+					var responseRates = await client.GetAsync(url);
+
+					client2.BaseAddress = new Uri("https://gist.githubusercontent.com");
+					var urlNames = "/picodotdev/88512f73b61bc11a2da4/raw/9407514be22a2f1d569e75d6b5a58bd5f0ebbad8";
+					var responseNames = await client2.GetAsync(urlNames);
+
+					if (!responseRates.IsSuccessStatusCode || !responseNames.IsSuccessStatusCode)
+					{
+						await App.Current.MainPage.DisplayAlert("Error", responseRates.StatusCode.ToString(), "Aceptar");
+						IsRunning = false;
+						IsEnabled = false;
+						return;
+					}
+
+					var result1 = await responseRates.Content.ReadAsStringAsync();
+					exchangeRates = JsonConvert.DeserializeObject<ExchangeRates>(result1);
+
+					var result2 = await responseNames.Content.ReadAsStringAsync();
+					rateNames = JsonConvert.DeserializeObject<RateNames>(result2);
+
+                    LoadRates();
                 }
 
-                OnlineStatus = "Divisas is Online";
-                var client = new HttpClient();
-                var client2 = new HttpClient();
-
-                client.BaseAddress = new Uri("https://openexchangerates.org");
-                var url = "/api/latest.json?app_id=f490efbcd52d48ee98fd62cf33c47b9e";
-                var responseRates = await client.GetAsync(url);
-
-                client2.BaseAddress = new Uri("https://gist.githubusercontent.com");
-                var urlNames = "/picodotdev/88512f73b61bc11a2da4/raw/9407514be22a2f1d569e75d6b5a58bd5f0ebbad8";
-                var responseNames = await client2.GetAsync(urlNames);
-
-                if (!responseRates.IsSuccessStatusCode || !responseNames.IsSuccessStatusCode)
-                {
-                    await App.Current.MainPage.DisplayAlert("Error", responseRates.StatusCode.ToString(), "Aceptar");
-                    IsRunning = false;
-                    IsEnabled = false;
-                    return;
-                }
-
-                var result1 = await responseRates.Content.ReadAsStringAsync();
-                exchangeRates = JsonConvert.DeserializeObject<ExchangeRates>(result1);
-
-                var result2 = await responseNames.Content.ReadAsStringAsync();
-                rateNames = JsonConvert.DeserializeObject<RateNames>(result2);
             }
             catch (Exception ex)
             {
@@ -257,7 +257,13 @@ namespace Taller2Divisas.ViewModels
                 return;
             }
 
-            LoadRates();
+			var loadSearch = dataService.First<LastSearch>(false);
+
+			if (loadSearch != null)
+			{
+				SourceRate = loadSearch.CodeSourceRateSearch;
+				TargetRate = loadSearch.TargetRateSearch;
+            }
             IsRunning = false;
             IsEnabled = true;
 
@@ -319,6 +325,14 @@ namespace Taller2Divisas.ViewModels
 			decimal amountConverted = Amount / (decimal)SourceRate * (decimal)TargetRate;
 
             Message = string.Format("{0:N2} = {1:N2}", Amount, amountConverted);
+
+            var lastSearch = new LastSearch{
+                CodeSourceRateSearch = SourceRate,
+                TargetRateSearch = TargetRate
+            };
+
+            dataService.DeleteAll<LastSearch>();
+            dataService.Insert(lastSearch);
 
 		}
 

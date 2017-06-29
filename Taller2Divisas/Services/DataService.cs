@@ -96,6 +96,14 @@ namespace Taller2Divisas.Services
 				return da.Find<T>(pk, withChildren);
 			}
 		}
+
+		public T First<T>(bool withChildren) where T : class
+		{
+			using (var da = new DataAccess())
+			{
+				return da.GetList<T>(withChildren).FirstOrDefault();
+			}
+		}
         #endregion
     }
 }
